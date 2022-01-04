@@ -1,0 +1,42 @@
+import java.text.SimpleDateFormat
+
+buildscript {
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:5.2.0"
+    }
+}
+
+plugins {
+    id 'java'
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+
+def timestamp = new SimpleDateFormat("dd-MMM-yyyy_HHmmss").format(new Date())
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets.main.java.srcDirs = ['build/generated-sources/xjc', 'src/main/gen', 'src/main/java']
+
+shadowJar {
+    zip64 true
+    manifest {
+        attributes 'Main-Class': 'CmdParserMain'
+    }
+    archiveFileName = "CmdParser_${timestamp}.jar"
+}
+
+dependencies {
+    implementation('org.antlr:antlr4:4.9.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}
